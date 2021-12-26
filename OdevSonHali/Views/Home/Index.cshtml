@@ -1,0 +1,92 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model OdevSonHali.Managers.IndexManager
+@inject SignInManager<YourStoryUser> SignInManager
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<style>
+    p {
+        display: -webkit-box;
+        -webkit-line-clamp: 7;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .yazan {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+</style>
+<div class="col-md-3 ">
+    <a asp-action="Index" class="list-group-item"><span><i class="fas fa-arrow-right"></i></span> Tümü</a>
+    @foreach (var cat in Model.Category)
+    {
+        <a href="@Url.Action("Select","Home", new { id = cat.Id })" title="@cat.Description" class="list-group-item"><span><i class="fas fa-arrow-right"></i></span> @cat.Title</a>
+    }
+</div>
+<div class="col-md-9 ">
+
+    <div class="row">
+        @foreach (var story in Model.Story)
+        {
+            <div class="card col-sm-4 col-lg-4 col-md-4  my-1">
+                <img src="https://www.kindacode.com/wp-content/uploads/2021/08/phone.jpg"
+                     class="card-img-top"
+                     alt="Phone" />
+                <div class="card-body">
+                    <div>
+
+                        <h5 class="card-title">@story.Title  <h6 class="card-subtitle mb-2 text-muted"> <span><i class="far fa-clock"></i></span> @story.CreatedOn</h6></h5>
+
+                    </div>
+
+
+                    <h6 class="card-subtitle mb-2 text-muted yazan"> <span><i class="far fa-user"></i></span> @story.ModifiedUsername</h6>
+
+                    <p class="card-text">
+                        @story.Text
+                    </p>
+                    <hr />
+                    @{
+                        if (SignInManager.IsSignedIn(User))
+                        {
+                            <a asp-action="Begen" asp-controller="Home" asp-route-id="@story.Id" type="button" class="btn "><span><i class="far fa-thumbs-up"></i></span></a>@story.LikeCount
+                        }
+                        else
+                        {
+                            <p>Beğeni Sayısı: @story.LikeCount</p>
+                        }
+                    }
+
+                    <button data-toggle="modal" data-target="#exampleModalLong" type="button" class="btn "><span><i class="far fa-comments"></i></span></button>
+                    <a href="#" class="btn float-end">Devam Et...</a>
+                </div>
+            </div>
+        }
+
+    </div>
+
+
+</div>
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Modal body text goes here.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
